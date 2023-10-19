@@ -1,4 +1,9 @@
 # sleeeeeepy.github.io
+## 알림
+GitHub Pages에서 보면 수식이 제대로 출력되지 않는 문제가 있습니다. 문제를 해결하기 전까지 아래 링크를 이용하세요.
+
+[이동](https://github.com/Sleeeeeepy/sleeeeeepy.github.io/tree/main)
+
 ## 1주차
 ### PS
 1. [문제풀이](./study/week1/ps.md)
