@@ -14,6 +14,7 @@ GitHub Pages에서 보면 수식이 제대로 출력되지 않는 문제가 있�
 ### Algorithm
 1. [그래프](./study/week2/graph.md)
 2. [트리](./study/week2/tree.md)
+3. [그래프 알고리즘](./study/week2/graph.md)
 
 ### License
 이 글에 사용되는 모든 이미지들은 직접 만들거나 위키피디아에서 가져온 것들입니다.
