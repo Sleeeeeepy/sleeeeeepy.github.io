@@ -271,7 +271,7 @@ def find_shortest_path(graph,
 ```
 
 ### 실제 사용에서
-빠르고 정확하게 풀어야 하는 문제 풀이 상황에서는 그래프를 이정도로 자세하게 만들기 어렵습니다. 따라서 거리 리스트를 따로 만들기도 합니다.
+빠르고 정확하게 풀어야 하는 문제 풀이 상황에서는 그래프를 이정도로 자세하게 만들기 어렵습니다. 따라서 거리 리스트를 따로 만들기도 합니다. 다음은 데이크스트라 알고리즘입니다.
 
 ``` python
 import heapq
@@ -301,6 +301,27 @@ def find_shortest_path(graph, startsAt):
                 heapq.heappush(pq, [via, new_dest])
 ```
 
+그리고 벨만-포드 알고리즘입니다.
+``` python
+graph = {
+    1: {2: 1, 3: 2, 4: 5},
+    2: {1: 3},
+    3: {2: 3, 1: 2, 4: 1},
+    4: {}
+}
+
+distance = [float('inf') for _ in range(5)]
+def find_shortest_path(startsAt):
+    distance[startsAt] = 0
+    for i in range(1, len(graph) + 1):
+        edges = graph[i]
+        for to, cost in edges.items():
+            if distance[to] > cost + distance[i]:
+                distance[to] = cost + distance[i]
+                if i == len(graph):
+                    return False
+    return True
+```
 단일 출발지 최단 경로 문제는 네트워크에서 라우팅 문제를 해결하는데 해결할 수 있습니다. 현 위치에서 목적지까지 가장 짧은 경로를 찾는데 사용됩니다.
 
 ## 모든 쌍 최단 경로
