@@ -77,6 +77,42 @@ def postorder(node):
 
 이 트라이는 `["A", "to", "tea", "ted", "ten", "i", "in", "inn"]`을 키로 두고 있는 트라이입니다.
 
+트라이는 아래와 같이 구현할 수 있습니다.
+``` python
+from collections import defaultdict
+class Node:
+    def __init__(self):
+        self.is_word = False
+        self.children = defaultdict(Node)
+
+class Trie:
+    def __init__(self):
+        self.root = Node()
+    
+    def insert(self, word):
+        node = self.root
+        for c in word:
+            node = node.children[c]
+        node.word = True
+    
+    def search(self, word):
+        node = self.root
+        for c in word:
+            if c not in node.children:
+                return False
+            node = node.children[c]
+        
+        return node.is_word
+    
+    def startsWith(self, prefix):
+        node = self.root
+        for c in prefix:
+            if c not in node.children:
+                return False
+            node = node.children[c]
+        
+        return True
+```
 ### Left Child Right Sibling 트리
 말 그대로 노드의 좌측에는 자식들이, 노드의 우측에는 형제들이 있는 트리입니다. 앞서 언급하였듯 모든 트리는 이진 트리로 변경될 수 있습니다. 다음은 차수가 6인 트리를 이진 트리로 변환하는 과정입니다.
 
@@ -87,3 +123,125 @@ def postorder(node):
 4. 이를 트리 전체에 적용합니다.
 
 이 외에도 B-tree, B+ tree, B* tree, 압축 트라이 등 수많은 트리가 있으나 모두 적을 수 없기에 생략합니다.
+
+## 이진 검색 트리 구현
+```python
+class Node:
+    def __init__(self, key, value, left, right):
+        self.key = key
+        self.value = value
+        self.left = left
+        self.right = right
+
+class BinarySearchTree:
+    def __init__(self):
+        self.root = None
+
+    def search(self, key):
+        p = self.root
+        while True:
+            if p is None:
+                return None
+            if key == p.key:
+                return p.value
+            elif key < p.key:
+                p = p.left
+            else:
+                p = p.right
+    
+    def add(self, key, value):
+        def add_node(node, key, value):
+            if key == node.key:
+                return False
+            elif key < node.key:
+                if node.left is None:
+                    node.left = Node(key, value, None, None)
+                else:
+                    add_node(node.left, key, value)
+            else:
+                if node.right is None:
+                    node.right = Node(key, value, None, None)
+                else:
+                    add_node(node.left, key, value)
+            return True
+        
+        if self.root is None
+            self.root = Node(key, value, None, None)
+            return True
+        else:
+            return add_node(self.root, key, value)
+    
+    def min_key(self):
+        if self.root is None:
+            return None
+        p = self.root
+        while p.left is not None:
+            p = p.left:
+        return p.key
+
+    def max_key(self):
+        if self.root is None:
+            return None
+        p = self.root
+        while p.right is not None:
+            p = p.right
+        return p.key
+
+    def dump(self):
+        def print_subtree(node: Node):
+            if node is not None:
+                print_subtree(node.left)
+                print(f"{node.key} {node.value}")
+                print_subtree(node.right)
+        print_subtree(self.root)
+    
+    def remove(self):
+        p = self.root
+        parent = None
+        is_left_child = False
+        while True:
+            if p is None:
+                return False
+            
+            if key == p.key:
+                break
+
+            parent = p
+            if key < p.key:
+                is_left_child = True
+                p = p.left
+            else:
+                is_left_child = False
+                p = p.right
+
+            if p.left is None:
+                if p is self.root:
+                    self.root = p.right
+                elif is_left_child:
+                    parent.left = p.right
+                else:
+                    parent.right = p.right
+            elif p.right is None:
+                if p is self.root:
+                    self.root = p.left
+                elif is_left_child:
+                    parent.left = p.left
+                else:
+                    parent.right = p.left
+            else:
+                parent = p
+                left = p.left
+                is_left_child = True
+                while left.right is not None:
+                    parent = left
+                    left = left.right
+                    is_left_child = False
+
+                p.key = left.key
+                p.value = left.value
+                if is_left_child:
+                    parent.left = left.left
+                else:
+                    parent.right = left.left
+            return True 
+```
