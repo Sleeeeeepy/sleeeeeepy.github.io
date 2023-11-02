@@ -63,11 +63,6 @@ int solution(int alp, int cop, vector<vector<int>> problems) {
     
     return solve(alp, cop, 0, target_alp, target_cop);
 }
-
-int main() {
-    auto result = solution(10, 10, {{10, 15, 2, 1, 2}, {20, 20, 3, 4, 4}});
-    std::cout << result << '\n';
-}
 ```
 
 ## 3. 필요없는 매개변수 제거하기
