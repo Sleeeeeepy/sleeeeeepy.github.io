@@ -33,6 +33,15 @@ GitHub Pages에서 보면 수식이 제대로 출력되지 않는 문제가 있�
 
 ### Assembly
 1. [x86-64](./study/week3/assembly.md)
+
+### PS
+1. [문제 풀이](./study/week3/ps.md)
+
+## 4주차
+### Data structure
+1. [Red-black tree](./study/week4/rbtree.md)
+
+
 'DP 쉽게 생각하기'는 2023년 5월에 작성된 글이여서 cpp를 기준으로 작성되었습니다. 곧 python으로 재작성 하겠습니다.
 ### License
 이 글에 사용되는 모든 이미지들은 직접 만들거나 위키피디아에서 가져온 것들입니다.
