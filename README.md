@@ -53,8 +53,10 @@ GitHub Pages에서 보면 수식이 제대로 출력되지 않는 문제가 있�
 1. [캐시 - 2](./study/week5/cache.md)
 2. [malloc lab 문제 해결](./study/week5/malloc_lab_troubleshooting.md)
 3. [malloc lab](./study/week5/malloc_internal.md)
+4. [가비지 컬렉션](./study/week5/gc.md)
 
 
+### 6주차
 ### License
 이 글에 사용되는 모든 이미지들은 직접 만들거나 위키피디아에서 가져온 것들입니다.
 이 문서에서 사용되는 이미지는 GFDL 1.2 혹은 CC-BY-SA 3.0를 따릅니다.
