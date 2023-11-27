@@ -57,6 +57,11 @@ GitHub Pages에서 보면 수식이 제대로 출력되지 않는 문제가 있�
 
 
 ### 6주차
+### 7주차
+1. [커널에서의 부동소수점 연산](./study/week7/floating_points_in_kernel.md)
+2. [고정소수점 연산](./study/week7/fixed_point_arithmetic.md)
+
+
 ### License
 이 글에 사용되는 모든 이미지들은 직접 만들거나 위키피디아에서 가져온 것들입니다.
 이 문서에서 사용되는 이미지는 GFDL 1.2 혹은 CC-BY-SA 3.0를 따릅니다.
