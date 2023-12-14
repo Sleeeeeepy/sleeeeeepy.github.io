@@ -93,30 +93,30 @@ task_find_original_fd (struct task* task, int fd) {
 bool
 task_inherit_fd (struct task *task, int fd) {
 	/* Find successor first */
-	int successor = -1;
-	for (size_t i = 0; i < MAX_FD; i++) {
-		if (task->fds[i].fd == fd && i != fd) {
-			successor = i;
-			break;
-		}
-	}
+    int successor = -1;
+    for (size_t i = 0; i < MAX_FD; i++) {
+        if (task->fds[i].fd == fd && i != fd) {
+            successor = i;
+            break;
+        }
+    }
 
-	if (successor == -1) {
-		return false;
-	}
+    if (successor == -1) {
+        return false;
+    }
 
-	/* Update fd. */
-	for (size_t i = 0; i < MAX_FD; i++) {
-		if (task->fds[i].fd == fd && i != fd) {
-			task->fds[i].fd = successor;
-		}
-	}
+    /* Update fd. */
+    for (size_t i = 0; i < MAX_FD; i++) {
+        if (task->fds[i].fd == fd && i != fd) {
+            task->fds[i].fd = successor;
+        }
+    }
 
-	/* Update succssor. */
-	task->fds[successor].duplicated = false;
-	task->fds[successor].dup_count = task->fds[fd].dup_count - 1;
-	task->fds[successor].stdio = task->fds[fd].stdio;
-	return true;
+    /* Update succssor. */
+    task->fds[successor].duplicated = false;
+    task->fds[successor].dup_count = task->fds[fd].dup_count - 1;
+    task->fds[successor].stdio = task->fds[fd].stdio;
+    return true;
 }
 ```
 
@@ -151,14 +151,14 @@ static int
 syscall_read (int fd, void *buffer, size_t len) {
     // ...
     if (task->fds[fd].stdio == 0) {
-		for (size_t i = 0; i < size; i++) {
-			bool result = put_user (buffer + i, input_getc());
-			if (!result) {
-				task_exit (-1);
-			}
-		}
+        for (size_t i = 0; i < size; i++) {
+            bool result = put_user (buffer + i, input_getc());
+            if (!result) {
+                task_exit (-1);
+            }
+        }
 
-		return size;
+        return size;
     }
     // ...
 }
@@ -167,9 +167,9 @@ static int
 syscall_write (int fd, void *buffer, size_t len) {
     // ...
     if (task->fds[fd].stdio == 1) {
-		putbuf(buffer, size);
-		return size;
-	}
+        putbuf(buffer, size);
+        return size;
+    }
     // ...
 }
 ```
