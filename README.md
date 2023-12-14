@@ -66,6 +66,8 @@ GitHub Pages에서 보면 수식이 제대로 출력되지 않는 문제가 있�
 
 ### 8주차
 1. [aarch64 docker에서 PintOS 시작하기](./study/week8/getting_started_with_pintos_on_arm.md)
+2. [dup2](./study/week8/trial_and_error_dup2.md)
+
 
 ### License
 이 글에 사용되는 모든 이미지들은 직접 만들거나 위키피디아에서 가져온 것들입니다.
