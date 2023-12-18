@@ -2,6 +2,8 @@
 
 ## 문제의 시작
 ``` c
+#define MAX_FD 64
+
 struct task {
     char *name;                 /* Name of the process. */
     pid_t pid;                  /* Process ID. */
@@ -24,16 +26,16 @@ struct task {
 fd를 배열로 만든 결과 문제가 발생합니다. 유닉스 스킴을 따르라는 말이 fdtable을 만들어서 하라는 뜻인줄 몰랐습니다. 정상적인 구현은 아마도 해시 테이블을 이용한 구현이었을 것 입니다.
 
 ``` c
-  int fd1, fd2 = 0x1CE; // ?
+  int fd1, fd2 = 0x1CE; // ?, Too big!
 
   // ...
   
-  // ??
+  // ??, Allocating another fd is not allowed in this test case.
   CHECK (dup2 (fd1, fd2) > 1, "first dup2()");
 ```
 
 이제 선택지는 두 가지 입니다.
-1. fdtable을 해시테이블로 다시 설계하기
+1. fdtable을 해시테이블을 이용하여 다시 설계하고 구현하기
 2. 잘못을 인정하지 않고 어떻게 해결해보기
 
 ## 매핑의 필요성
