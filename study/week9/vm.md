@@ -95,3 +95,95 @@ ldd filename
     - 만약 찾을 수 없다면 에러가 발생하고 프로세스가 종료됩니다. 커널 단에서 발생하면 커널 패닉이 발생합니다.
 3. 업데이트 되지 않은 정보가 있다면 업데이트를 수행합니다. (2-3)
 4. 페이지 테이블에 페이지를 install 합니다.
+
+### 페이징
+현재 x86_64 프로세서에서는 **4단계 페이징**을 사용합니다. 하나의 단계를 더 추가해서 128 PiB까지 지원하는 *5단계 페이징*도 있지만, 비교적 최근 지원되기 시작했습니다. PintOS에서는 마찬가지로 4단계 페이징을 이용합니다. 페이지 테이블은 가상 주소와 실제 주소를 매핑하는 곳으로, 각 매핑을 페이지 테이블 엔트리(page table entry)라고 부릅니다. 페이지 테이블을 관리하는 코드는 `mmu.c`에 존재합니다. 여기에서 메모리를 5개의 조각으로 나눕니다. 메모리를 5개의 조각으로 나누는 이유는, 단순히 페이지 크기(4096 byte or 4 MiB)로 나누면 메모리 매핑을 위해서 엄청난 양의 메모리($2^{64-12}$ byte or $2^{64-22}$ byte)가 필요하기 때문입니다.
+
+#### 4단계 페이징의 경우
+```
+63~48: sign ext
+47~39: pml4 offset
+38~30: pdp offset
+29~21: pgdir offset
+20~12: pte offset
+11~00: frame offset
+```
+
+#### Appendix: 5단계 페이징의 경우
+```
+63~58: sign ext
+57~48: pgd offset
+47~39: p4d offset
+38~30: pud offset
+29~21: pmd offset
+20~12: pte offset
+11~00: frame offset
+```
+
+#### 페이지 삽입
+``` c
+bool
+pml4_set_page (uint64_t *pml4, void *upage, void *kpage, bool rw) {
+	ASSERT (pg_ofs (upage) == 0);
+	ASSERT (pg_ofs (kpage) == 0);
+	ASSERT (is_user_vaddr (upage));
+	ASSERT (pml4 != base_pml4);
+
+	uint64_t *pte = pml4e_walk (pml4, (uint64_t) upage, 1);
+
+	if (pte)
+		*pte = vtop (kpage) | PTE_P | (rw ? PTE_W : 0) | PTE_U;
+	return pte != NULL;
+}
+```
+
+#### 페이지 검색
+``` c
+void *
+pml4_get_page (uint64_t *pml4, const void *uaddr) {
+	ASSERT (is_user_vaddr (uaddr));
+
+	uint64_t *pte = pml4e_walk (pml4, (uint64_t) uaddr, 0);
+
+	if (pte && (*pte & PTE_P))
+		return ptov (PTE_ADDR (*pte)) + pg_ofs (uaddr);
+	return NULL;
+}
+```
+
+#### 페이지 삭제
+``` c
+void
+pml4_clear_page (uint64_t *pml4, void *upage) {
+	uint64_t *pte;
+	ASSERT (pg_ofs (upage) == 0);
+	ASSERT (is_user_vaddr (upage));
+
+	pte = pml4e_walk (pml4, (uint64_t) upage, false);
+
+	if (pte != NULL && (*pte & PTE_P) != 0) {
+		*pte &= ~PTE_P;
+		if (rcr3 () == vtop (pml4))
+			invlpg ((uint64_t) upage);
+	}
+}
+```
+
+#### 페이지 테이블 파괴
+``` c
+void
+pml4_destroy (uint64_t *pml4) {
+	if (pml4 == NULL)
+		return;
+	ASSERT (pml4 != base_pml4);
+
+	/* if PML4 (vaddr) >= 1, it's kernel space by define. */
+	uint64_t *pdpe = ptov ((uint64_t *) pml4[0]);
+	if (((uint64_t) pdpe) & PTE_P)
+		pdpe_destroy ((void *) PTE_ADDR (pdpe));
+	palloc_free_page ((void *) pml4);
+}
+```
+
+#### 페이지 테이블 탐색 과정
+페이지 테이블을 탐색할 때 pml4, pdpe, pgidr, pte를 차례로 탐색합니다. 이는 각각 `pml4e_walk`, `pdpe_walk`, `pgdir_walk` 함수가 구현하고 있습니다. 각각의 함수를 차례대로 호출하면서 탐색을 수행합니다. 만약 페이지 테이블에 해당 유저 테이블이 없다면 `NULL`을 반환합니다.
